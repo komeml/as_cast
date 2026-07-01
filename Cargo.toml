@@ -1,6 +1,13 @@
 [package]
 name = "as_cast"
 version = "0.1.0"
+categories = ["no-std"]
+description = "Method-style, explicitly-lossy casts as an alternative to the as keyword."
 edition = "2024"
+keywords = ["cast", "checked", "integer", "float"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/komeml/as_cast"
+rust-version = "1.85.0"
 
-[dependencies]
+[features]
