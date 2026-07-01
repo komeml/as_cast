@@ -1,3 +1,5 @@
+#![no_std]
+
 pub mod cast;
 
 pub(crate) mod macros;
