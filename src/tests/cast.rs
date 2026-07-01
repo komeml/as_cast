@@ -44,7 +44,6 @@ macro_rules! check_bounds {
 macro_rules! check_from_f32 {
     ($val:expr) => {{
         let v: f32 = $val;
-        assert_bits_eq!(v.cast_f32(), v);
         assert_bits_eq!(v.cast_f64(), v as f64);
     }};
 }
@@ -54,7 +53,6 @@ macro_rules! check_from_f64 {
     ($val:expr) => {{
         let v: f64 = $val;
         assert_bits_eq!(v.cast_f32(), v as f32);
-        assert_bits_eq!(v.cast_f64(), v);
     }};
 }
 
@@ -163,22 +161,16 @@ fn f64_to_f32_overflow_is_infinity() {
 /// 符号付きゼロの保存
 #[test]
 fn signed_zero_is_preserved() {
-    assert!((-0.0f32).cast_f32().is_sign_negative());
     assert!((-0.0f32).cast_f64().is_sign_negative());
     assert!((-0.0f64).cast_f32().is_sign_negative());
-    assert!((-0.0f64).cast_f64().is_sign_negative());
 
-    assert!((0.0f32).cast_f32().is_sign_positive());
     assert!((0.0f32).cast_f64().is_sign_positive());
     assert!((0.0f64).cast_f32().is_sign_positive());
-    assert!((0.0f64).cast_f64().is_sign_positive());
 }
 
 /// NaN は NaN のまま
 #[test]
 fn nan_stays_nan() {
-    assert!(f32::NAN.cast_f32().is_nan());
     assert!(f32::NAN.cast_f64().is_nan());
     assert!(f64::NAN.cast_f32().is_nan());
-    assert!(f64::NAN.cast_f64().is_nan());
 }

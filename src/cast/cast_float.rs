@@ -1,5 +1,3 @@
-use crate::macros::{for_floats, for_signed_ints, for_unsigned_ints};
-
 pub trait CastF32 {
     fn cast_f32(self) -> f32;
 }
@@ -32,10 +30,10 @@ macro_rules! cast_f64 {
     };
 }
 
-for_unsigned_ints!(cast_f32);
-for_signed_ints!(cast_f32);
-for_floats!(cast_f32);
+cast_f32!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f64
+);
 
-for_unsigned_ints!(cast_f64);
-for_signed_ints!(cast_f64);
-for_floats!(cast_f64);
+cast_f64!(
+    u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32
+);
