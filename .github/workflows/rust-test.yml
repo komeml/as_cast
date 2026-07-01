@@ -21,7 +21,6 @@ jobs:
       - uses: ./.github/actions/rust-setup
         with:
           components: rustfmt
-          is-cache: false
       - run: cargo fmt --all --check
 
   cargo-clippy:

@@ -5,10 +5,6 @@ inputs:
   components:
     required: false
     default: ""
-  is-cache:
-    required: false
-    default: true
-
 runs:
   using: composite
   steps:
