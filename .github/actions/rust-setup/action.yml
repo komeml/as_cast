@@ -1,6 +1,7 @@
 name: Rust Setup
 inputs:
   components:
+    description: "Components of dtolnay/rust-toolchain@stable"
     required: false
     default: ""
 runs:
