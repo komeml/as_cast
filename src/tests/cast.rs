@@ -40,7 +40,7 @@ macro_rules! check_bounds {
     )*};
 }
 
-// f32 入力: cast_f32 は恒等、cast_f64 は拡大。
+// f32 入力: cast_f64 は拡大。
 macro_rules! check_from_f32 {
     ($val:expr) => {{
         let v: f32 = $val;
@@ -48,7 +48,7 @@ macro_rules! check_from_f32 {
     }};
 }
 
-// f64 入力: cast_f32 は縮小、cast_f64 は恒等。
+// f64 入力: cast_f32 は縮小。
 macro_rules! check_from_f64 {
     ($val:expr) => {{
         let v: f64 = $val;
