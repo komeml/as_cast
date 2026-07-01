@@ -10,12 +10,12 @@ macro_rules! for_signed_scalars {
     };
 }
 
-macro_rules! for_float {
+macro_rules! for_floats {
     ($mac:ident) => {
         $mac!(f32, f64);
     };
 }
 
-pub(crate) use for_float;
+pub(crate) use for_floats;
 pub(crate) use for_signed_scalars;
 pub(crate) use for_unsigned_scalars;

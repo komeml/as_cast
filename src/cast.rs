@@ -1,4 +1,4 @@
-use crate::macros::{for_float, for_signed_scalars, for_unsigned_scalars};
+use crate::macros::{for_floats, for_signed_scalars, for_unsigned_scalars};
 
 pub trait CastF32 {
     fn cast_f32(self) -> f32;
@@ -34,8 +34,8 @@ macro_rules! cast_f64 {
 
 for_unsigned_scalars!(cast_f32);
 for_signed_scalars!(cast_f32);
-for_float!(cast_f32);
+for_floats!(cast_f32);
 
 for_unsigned_scalars!(cast_f64);
 for_signed_scalars!(cast_f64);
-for_float!(cast_f64);
+for_floats!(cast_f64);
