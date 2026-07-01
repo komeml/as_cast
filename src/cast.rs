@@ -1,4 +1,4 @@
-use crate::{for_float, for_signed_scalars, for_unsigned_scalars};
+use crate::macros::{for_float, for_signed_scalars, for_unsigned_scalars};
 
 pub trait CastF32 {
     fn cast_f32(self) -> f32;
