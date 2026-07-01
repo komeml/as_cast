@@ -6,10 +6,6 @@ on:
       - synchronize
       - reopened
       - ready_for_review
-    paths:
-      - "**/*.rs"
-      - "**/Cargo.toml"
-      - "**/Cargo.lock"
 
   workflow_dispatch:
 
