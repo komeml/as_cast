@@ -1,7 +1,5 @@
 name: Rust Setup
 inputs:
-  sha:
-    required: true
   components:
     required: false
     default: ""
