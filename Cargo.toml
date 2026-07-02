@@ -1,6 +1,6 @@
 [package]
 name = "as_cast"
-version = "0.1.0"
+version = "0.2.0"
 categories = ["no-std"]
 description = "Method-style, explicitly-lossy casts as an alternative to the as keyword."
 edition = "2024"
