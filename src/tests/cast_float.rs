@@ -4,10 +4,14 @@
 //! 「トレイト経由の結果」を「`as` の結果」または既知の期待値とビット単位で比較する。
 //! NaN は `is_nan()`、符号付きゼロは符号ビット（`to_bits` / `is_sign_*`）で扱う。
 
+use super::cast_utility::{
+    F32S, F64S, I8S, I16S, I32S, I64S, I128S, ISIZES, U8S, U16S, U32S, U64S, U128S, USIZES,
+};
 use crate::cast::{CastF32, CastF64};
 
-// ========== 比較ヘルパ ==========
-// 浮動小数点を to_bits() で厳密比較する（±0.0 を区別し、clippy::float_cmp を回避）。
+/// 浮動小数点を `to_bits()` で厳密比較する（±0.0 を区別し、`clippy::float_cmp` を回避）。
+///
+/// `cast_f32` / `cast_f64` の結果を `as` の結果や既知の期待値とビット単位で突き合わせる際に使う。
 macro_rules! assert_bits_eq {
     ($actual:expr, $expected:expr $(,)?) => {{
         let (a, e) = ($actual, $expected);
@@ -32,12 +36,13 @@ macro_rules! check_int {
     }};
 }
 
-// 各整数型の MIN / MAX をまとめて検証（符号なしの MIN は 0）。
-macro_rules! check_bounds {
-    ($($t:ty),* $(,)?) => {$(
-        check_int!(<$t>::MIN);
-        check_int!(<$t>::MAX);
-    )*};
+// 共有のソース値配列を走査し、全要素で `check_int!` を回す。
+macro_rules! check_ints {
+    ($($arr:expr),+ $(,)?) => {$(
+        for &v in $arr.iter() {
+            check_int!(v);
+        }
+    )+};
 }
 
 // f32 入力: cast_f64 は拡大。
@@ -56,83 +61,29 @@ macro_rules! check_from_f64 {
     }};
 }
 
-/// 符号なし整数
+/// 符号なし整数（各型の MIN / 中間 / MAX を共有配列から網羅）
 #[test]
 fn unsigned_integers() {
-    // 0（= 各型の MIN）と 各型の MAX
-    check_bounds!(u8, u16, u32, u64, u128, usize);
-
-    // 中間の半端な値（u8/u16 には入らないので u32 以上）
-    check_int!(123_456_789u32);
-    check_int!(123_456_789u64);
-    check_int!(123_456_789u128);
-    check_int!(123_456_789usize);
-
-    // 2^24 近辺（f32 の丸め境界）— 保持できる型のみ
-    check_int!(16_777_216u32);
-    check_int!(16_777_217u32);
-    check_int!(16_777_216u64);
-    check_int!(16_777_217u64);
-    check_int!(16_777_216u128);
-    check_int!(16_777_217u128);
-    check_int!(16_777_216usize);
-    check_int!(16_777_217usize);
+    check_ints!(U8S, U16S, U32S, U64S, U128S, USIZES);
 }
 
-/// 符号あり整数
+/// 符号あり整数（各型の MIN / -1 / 0 / 中間 / MAX を共有配列から網羅）
 #[test]
 fn signed_integers() {
-    // 各型の MIN / MAX
-    check_bounds!(i8, i16, i32, i64, i128, isize);
-
-    // 0 と -1（全型）
-    check_int!(0i8);
-    check_int!(0i16);
-    check_int!(0i32);
-    check_int!(0i64);
-    check_int!(0i128);
-    check_int!(0isize);
-    check_int!(-1i8);
-    check_int!(-1i16);
-    check_int!(-1i32);
-    check_int!(-1i64);
-    check_int!(-1i128);
-    check_int!(-1isize);
-
-    // 負の半端な値（i8/i16 には入らないので i32 以上）
-    check_int!(-123_456_789i32);
-    check_int!(-123_456_789i64);
-    check_int!(-123_456_789i128);
-    check_int!(-123_456_789isize);
+    check_ints!(I8S, I16S, I32S, I64S, I128S, ISIZES);
 }
 
-/// 浮動小数点（通常値）
+/// 浮動小数点（通常値・境界・∞・NaN を共有配列から網羅）
 #[test]
-#[allow(clippy::approx_constant)]
 fn floats() {
-    // 0.0 / -0.0（符号ビットも to_bits で区別される）
-    check_from_f32!(0.0);
-    check_from_f32!(-0.0);
-    check_from_f64!(0.0);
-    check_from_f64!(-0.0);
-
-    // 小数を持つ値
-    check_from_f32!(1.5);
-    check_from_f32!(3.14);
-    check_from_f64!(1.5);
-    check_from_f64!(3.14);
-
-    // 各型の MIN / MAX（有限）
-    check_from_f32!(f32::MIN);
-    check_from_f32!(f32::MAX);
-    check_from_f64!(f64::MIN);
-    check_from_f64!(f64::MAX);
-
-    // 無限大
-    check_from_f32!(f32::INFINITY);
-    check_from_f32!(f32::NEG_INFINITY);
-    check_from_f64!(f64::INFINITY);
-    check_from_f64!(f64::NEG_INFINITY);
+    // f32 入力（0.0 / -0.0 / 小数 / MIN / MAX / ∞ / NaN）→ cast_f64 は拡大。
+    for &v in F32S.iter() {
+        check_from_f32!(v);
+    }
+    // f64 入力 → cast_f32 は縮小。
+    for &v in F64S.iter() {
+        check_from_f64!(v);
+    }
 }
 
 /// f32 の丸め境界（自己文書化）
