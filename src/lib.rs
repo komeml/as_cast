@@ -6,4 +6,5 @@ pub mod cast;
 mod tests {
     mod cast_float;
     mod cast_int;
+    pub(super) mod cast_utility;
 }
