@@ -1,4 +1,4 @@
-/// Simple `as` cast
+/// `as` を使ったシンプルキャスト
 macro_rules! simple_as {
     ($v:ident, $t:ty) => {
         $v as $t
@@ -49,6 +49,20 @@ macro_rules! convert_int_to_int {
     ($v:ident, $target:ty) => {{ <$target>::try_from($v).ok() }};
 }
 
+/// 浮動小数点から浮動小数点へ損失無く変換するマクロ
+///
+/// 損失が発生する場合はNoneが返ってくる
+macro_rules! convert_float_to_float {
+    ($v:ident, $target:ty, $src:ty) => {{
+        let cast = $v as $target;
+        if (cast as $src) == $v {
+            Some(cast)
+        } else {
+            None
+        }
+    }};
+}
+
 /// [`can_convert_int_to_float!`]ディスパッチマクロを生成します。
 macro_rules! generate_can_convert_macro {
     ($d:tt; $($st:tt),+ $(,)? ; $($ut:tt),+ $(,)?) => {
@@ -72,6 +86,7 @@ generate_can_convert_macro!($; i8, i16, i32, i64, i128, isize ; u8, u16, u32, u6
 
 pub(crate) use can_convert_signed_int_to_float;
 pub(crate) use can_convert_unsigned_int_to_float;
+pub(crate) use convert_float_to_float;
 pub(crate) use convert_float_to_int;
 pub(crate) use convert_int_to_int;
 pub(crate) use simple_as;
