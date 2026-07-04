@@ -3,6 +3,7 @@
 #[cfg(feature = "cast")]
 pub mod cast;
 
+#[cfg(feature = "checked-cast")]
 pub mod checked_cast;
 
 #[cfg(test)]
@@ -13,6 +14,6 @@ mod tests {
     #[cfg(feature = "cast")]
     mod cast_int;
 
-    #[cfg(feature = "cast")]
+    #[cfg(any(feature = "cast", feature = "checked-cast"))]
     pub(super) mod cast_utility;
 }

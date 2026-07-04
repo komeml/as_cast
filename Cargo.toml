@@ -11,5 +11,6 @@ repository = "https://github.com/komeml/as_cast"
 rust-version = "1.85.0"
 
 [features]
-default = ["cast"]
+default = ["cast", "checked-cast"]
 cast = []
+checked-cast = []
