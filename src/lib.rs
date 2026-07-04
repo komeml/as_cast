@@ -3,6 +3,8 @@
 #[cfg(feature = "cast")]
 pub mod cast;
 
+pub mod checked_cast;
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "cast")]
