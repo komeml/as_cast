@@ -54,6 +54,10 @@ macro_rules! convert_int_to_int {
 /// 損失が発生する場合はNoneが返ってくる
 macro_rules! convert_float_to_float {
     ($v:ident, $target:ty, $src:ty) => {{
+        if $v.is_nan() {
+            return None;
+        }
+
         let cast = $v as $target;
         if (cast as $src) == $v {
             Some(cast)
