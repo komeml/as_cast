@@ -8,7 +8,7 @@ macro_rules! impl_checked_cast_float {
                 }
 
                 let cast = self as $target;
-                if (cast as i64) == self as i64 {
+                if (cast as $src) == self {
                     Some(cast)
                 } else {
                     None
