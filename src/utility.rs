@@ -22,6 +22,9 @@ macro_rules! can_convert_unsigned_int_to_float {
     };
 }
 
+/// 浮動小数点から整数へ損失無く変換するマクロ
+///
+/// 損失が発生する場合はNoneが返ってくる
 macro_rules! convert_float_to_int {
     ($v:ident, $target:ty, $src:ty) => {{
         if $v.is_nan() {
@@ -37,6 +40,13 @@ macro_rules! convert_float_to_int {
             None
         }
     }};
+}
+
+/// 整数から整数へ損失無く変換するマクロ
+///
+/// 損失が発生する場合はNoneが返ってくる
+macro_rules! convert_int_to_int {
+    ($v:ident, $target:ty) => {{ <$target>::try_from($v).ok() }};
 }
 
 /// [`can_convert_int_to_float!`]ディスパッチマクロを生成します。
@@ -63,6 +73,7 @@ generate_can_convert_macro!($; i8, i16, i32, i64, i128, isize ; u8, u16, u32, u6
 pub(crate) use can_convert_signed_int_to_float;
 pub(crate) use can_convert_unsigned_int_to_float;
 pub(crate) use convert_float_to_int;
+pub(crate) use convert_int_to_int;
 pub(crate) use simple_as;
 
 // これを削除するとエラーになるが何故かClippyで警告が出るためallowで抑制しています
