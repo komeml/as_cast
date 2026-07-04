@@ -1,6 +1,5 @@
 #![no_std]
 
-#[macro_use]
 pub(crate) mod utility;
 
 #[cfg(feature = "cast")]
