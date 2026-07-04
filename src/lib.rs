@@ -18,4 +18,10 @@ mod tests {
 
     #[cfg(any(feature = "cast", feature = "checked-cast"))]
     pub(super) mod cast_utility;
+
+    #[cfg(feature = "checked-cast")]
+    mod checked_cast_float;
+
+    #[cfg(feature = "checked-cast")]
+    mod checked_cast_int;
 }
