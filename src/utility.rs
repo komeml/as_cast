@@ -28,16 +28,16 @@ macro_rules! can_convert_unsigned_int_to_float {
 macro_rules! convert_float_to_int {
     ($v:ident, $target:ty, $src:ty) => {{
         if $v.is_nan() {
-            return None;
-        }
-
-        let cast = $v as $target;
-        if (cast as $src) == $v
-            && !(cast == <$target>::MAX && <$target>::BITS > <$src>::MANTISSA_DIGITS)
-        {
-            Some(cast)
-        } else {
             None
+        } else {
+            let cast = $v as $target;
+            if (cast as $src) == $v
+                && !(cast == <$target>::MAX && <$target>::BITS > <$src>::MANTISSA_DIGITS)
+            {
+                Some(cast)
+            } else {
+                None
+            }
         }
     }};
 }
@@ -55,14 +55,14 @@ macro_rules! convert_int_to_int {
 macro_rules! convert_float_to_float {
     ($v:ident, $target:ty, $src:ty) => {{
         if $v.is_nan() {
-            return None;
-        }
-
-        let cast = $v as $target;
-        if (cast as $src) == $v {
-            Some(cast)
-        } else {
             None
+        } else {
+            let cast = $v as $target;
+            if (cast as $src) == $v {
+                Some(cast)
+            } else {
+                None
+            }
         }
     }};
 }
