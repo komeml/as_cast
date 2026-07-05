@@ -1,5 +1,5 @@
 # as_cast
-[English](README.md) [日本語]
+\[[English](README.md)\]
 
 ## 概要
 Rust標準の `self as T` によるキャストは、記述が増えるとコードが読みづらくなるという問題があります。

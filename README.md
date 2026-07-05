@@ -1,5 +1,5 @@
 # as_cast
-[English] [日本語](README-jp.md)
+[日本語](https://github.com/komeml/as_cast/blob/main/README-jp.md)
 
 ## Overview
 Rust's built-in `self as T` casting has a readability problem: as casts pile up, the code becomes harder to follow.
