@@ -1,5 +1,8 @@
 #![no_std]
 
+// すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
+#[allow(unused_macros, unused_imports)]
+#[cfg(any(feature = "cast", feature = "checked-cast"))]
 pub(crate) mod utility;
 
 #[cfg(feature = "cast")]
