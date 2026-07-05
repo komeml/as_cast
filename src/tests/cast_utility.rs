@@ -71,3 +71,22 @@ pub(crate) const F64S: [f64; 17] = [
     f64::NEG_INFINITY,
     f64::NAN,
 ];
+
+// ========== 仮数部境界の定数 ==========
+//
+// 浮動小数点が整数を連続で表せる上限（f32: 2^24、f64: 2^53）とその前後 ±1。
+// `checked_cast` の整数 → 浮動小数点テストで精度落ちの境界を突くために使う。
+
+#[cfg(feature = "checked-cast")]
+pub(crate) const F32_MANTISSA_LIMIT: u32 = 1 << f32::MANTISSA_DIGITS;
+#[cfg(feature = "checked-cast")]
+pub(crate) const F32_MANTISSA_LIMIT_MINUS_1: u32 = F32_MANTISSA_LIMIT - 1;
+#[cfg(feature = "checked-cast")]
+pub(crate) const F32_MANTISSA_LIMIT_PLUS_1: u32 = F32_MANTISSA_LIMIT + 1;
+
+#[cfg(feature = "checked-cast")]
+pub(crate) const F64_MANTISSA_LIMIT: u64 = 1 << f64::MANTISSA_DIGITS;
+#[cfg(feature = "checked-cast")]
+pub(crate) const F64_MANTISSA_LIMIT_MINUS_1: u64 = F64_MANTISSA_LIMIT - 1;
+#[cfg(feature = "checked-cast")]
+pub(crate) const F64_MANTISSA_LIMIT_PLUS_1: u64 = F64_MANTISSA_LIMIT + 1;
