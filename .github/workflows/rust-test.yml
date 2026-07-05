@@ -13,8 +13,8 @@ jobs:
   cargo-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/rust-setup
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
       - run: cargo fmt --all --check
@@ -22,15 +22,19 @@ jobs:
   cargo-clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/rust-setup
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
-      - run: cargo clippy --all-targets --all-features -- -D warnings
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo hack clippy --each-feature --all-targets -- -D warnings
 
   cargo-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/rust-setup
-      - run: cargo test --verbose
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo hack test --each-feature
