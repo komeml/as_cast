@@ -1,32 +1,59 @@
 # as_cast
+[日本語](https://github.com/komeml/as_cast/blob/main/README-jp.md)
 
-## 概要
-Rust標準の `self as T` によるキャストは、記述が増えるとコードが読みづらくなるという問題があります。
+## Overview
+Rust's built-in `self as T` casting has a readability problem: as casts pile up, the code becomes harder to follow.
 
-`as_cast` は、この問題を解決するために `cast_f32()` や `cast_f64()` といった**関数形式**でキャストを行えるようにしたクレートです。
+`as_cast` is a crate that solves this by providing casts in **method form**, such as `cast_i32()` and `cast_f64()`.
+
+It also provides lossless-aware variants like `checked_cast_i32()` and `checked_cast_f64()` that account for loss during casting.
+
+## Features
+Each feature can be enabled individually via feature flags (`cast` / `checked-cast`). Both are enabled by default.
+
+### Cast*
+
+A set of traits that perform the standard `as` cast in method form. From `cast_u8()` to `cast_f64()`, conversions are supported between all numeric types (`u8`–`u128`, `usize`, `i8`–`i128`, `isize`, `f32`, `f64`).
+
+The behavior is exactly the same as `as`, so **any loss goes undetected**. If you want to detect loss, use `CheckedCast*` instead.
 
 ```rust
-use as_cast::cast::{CastF32, CastF64};
+use as_cast::cast::{CastU8, CastF64};
 
-let n: i32 = 42;
+let n: i32 = 300;
 
-// 標準の `as` キャスト
-let x = n as f32;
-
-// as_cast による関数形式のキャスト
-let y = n.cast_f32();
+assert_eq!(n.cast_u8(), 44); // truncated, same behavior as `as`
+assert_eq!(n.cast_f64(), 300.0);
 ```
 
-## 注意点
-`cast` 系の処理は値の安全性を保障していません。
+### CheckedCast*
 
-標準の `as` と同様に、キャスト時に**情報が欠落する可能性がある**点に注意してください（範囲外の値の丸め、整数から浮動小数点への変換による精度の低下、浮動小数点から整数への変換による小数部の切り捨てなど）。
+A set of traits that can detect loss during conversion. `checked_cast_*()` returns an `Option<T>`, yielding `Some` **only when the conversion is lossless**.
 
-## 実装予定
-- [x] 整数→整数へキャストする `cast_xx()` 系処理の追加
-- [x] 浮動小数点→整数へキャストする `cast_xx()` 系処理の追加
-- [x] `Option` を戻り値に持ち、変換時にロスが発生したときに `None` を返す `CheckedCast` 系処理の追加
-- [ ] 変換時にロスが発生したときに panic を発生させる `UnwrappedCast` 系処理の追加
-- [ ] 範囲外なら型の最小値/最大値に丸める `SaturatingCast` 系処理の追加
-- [ ] キャスト時にオーバーフローが起きたら値をラップする `WrappingCast` 系処理の追加
-- [ ] 戻り値で `(WrappingCast の値, オーバーフローしたか)` のタプルを返す `OverflowingCast` 系処理の追加
+`None` is returned in the following cases:
+
+- The value is out of range for the target type (e.g. `300i32` → `u8`)
+- A float-to-integer conversion would lose the fractional part (e.g. `1.5f64` → `u8`)
+- An integer-to-float conversion would exceed the mantissa precision (e.g. `16_777_217i32` → `f32`)
+- Casting `NaN`
+
+```rust
+use as_cast::checked_cast::CheckedCastU8;
+
+let n: i32 = 200;
+assert_eq!(n.checked_cast_u8(), Some(200));
+
+let m: i32 = 300;
+assert_eq!(m.checked_cast_u8(), None); // out of range for u8
+
+let f: f64 = 1.5;
+assert_eq!(f.checked_cast_u8(), None); // fractional part would be lost
+```
+
+## Roadmap
+- [x] `Cast*` : casts with the same behavior as `as`
+- [x] `CheckedCast*` : returns `None` when loss would occur
+- [ ] `SaturatingCast*` : clamps out-of-range values to the type's min/max
+- [ ] `WrappingCast*` : wraps the value on overflow
+- [ ] `OverflowingCast*` : returns a tuple of `(same value as WrappingCast, whether it overflowed)`
+- [ ] `UnwrappedCast*` : panics when loss would occur

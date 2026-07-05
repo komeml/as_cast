@@ -9,6 +9,7 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/komeml/as_cast"
 rust-version = "1.85.0"
+exclude = [".github/", ".gitignore"]
 
 [features]
 default = ["cast", "checked-cast"]

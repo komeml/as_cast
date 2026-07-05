@@ -1,3 +1,7 @@
+#![cfg_attr(
+    all(feature = "cast", feature = "checked-cast"),
+    doc = include_str!("../README.md")
+)]
 #![no_std]
 
 // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
