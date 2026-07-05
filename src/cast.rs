@@ -1,3 +1,5 @@
+use crate::utility::simple_as;
+
 macro_rules! cast_trait {
     ($trait:ident :: $method:ident -> $target:ty; $($src:ty),+ $(,)?) => {
         pub trait $trait {
@@ -8,7 +10,7 @@ macro_rules! cast_trait {
             impl $trait for $src {
                 #[inline]
                 fn $method(self) -> $target {
-                    self as $target
+                    simple_as!(self, $target)
                 }
             }
         )+
