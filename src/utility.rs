@@ -73,13 +73,13 @@ macro_rules! generate_can_convert_macro {
         macro_rules! can_convert_int_to_float {
             $(
                 ($d v:ident, $d target:ty, $st) => {
-                    can_convert_signed_int_to_float!($v, $target, $st)
+                    can_convert_signed_int_to_float!($d v, $d target, $st)
                 };
             )+
 
             $(
                 ($d v:ident, $d target:ty, $ut) => {
-                    can_convert_unsigned_int_to_float!($v, $target, $ut)
+                    can_convert_unsigned_int_to_float!($d v, $d target, $ut)
                 };
             )+
         }
