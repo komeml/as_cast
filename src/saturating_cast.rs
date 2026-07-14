@@ -1,7 +1,7 @@
 use crate::utility::simple_as;
 
-/// 損失無しのキャスト(拡大・同幅同符号など)
-macro_rules! saturating_cast_lossless {
+/// 単純なasキャスト
+macro_rules! saturating_cast_simple_as {
     ($v:ident, $src:ty, $dst:ty) => {{ simple_as!($v, $dst) }};
 }
 
@@ -87,11 +87,11 @@ trait_saturating_cast!(
 
 // 符号なし整数へ
 // 拡大キャストは損失が発生しない(usizeはstdのFrom実装と同様に16bit幅の可能性を考慮する)
-impl_saturating_cast_macro!(SaturatingCastU16::saturating_cast_u16 -> u16, saturating_cast_lossless; u8);
-impl_saturating_cast_macro!(SaturatingCastU32::saturating_cast_u32 -> u32, saturating_cast_lossless; u8, u16);
-impl_saturating_cast_macro!(SaturatingCastU64::saturating_cast_u64 -> u64, saturating_cast_lossless; u8, u16, u32);
-impl_saturating_cast_macro!(SaturatingCastU128::saturating_cast_u128 -> u128, saturating_cast_lossless; u8, u16, u32, u64);
-impl_saturating_cast_macro!(SaturatingCastUsize::saturating_cast_usize -> usize, saturating_cast_lossless; u8, u16);
+impl_saturating_cast_macro!(SaturatingCastU16::saturating_cast_u16 -> u16, saturating_cast_simple_as; u8);
+impl_saturating_cast_macro!(SaturatingCastU32::saturating_cast_u32 -> u32, saturating_cast_simple_as; u8, u16);
+impl_saturating_cast_macro!(SaturatingCastU64::saturating_cast_u64 -> u64, saturating_cast_simple_as; u8, u16, u32);
+impl_saturating_cast_macro!(SaturatingCastU128::saturating_cast_u128 -> u128, saturating_cast_simple_as; u8, u16, u32, u64);
+impl_saturating_cast_macro!(SaturatingCastUsize::saturating_cast_usize -> usize, saturating_cast_simple_as; u8, u16);
 
 impl_saturating_cast_macro!(SaturatingCastU8::saturating_cast_u8 -> u8, saturating_cast_clamp_both; u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
 impl_saturating_cast_macro!(SaturatingCastU16::saturating_cast_u16 -> u16, saturating_cast_clamp_both; u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
@@ -101,19 +101,19 @@ impl_saturating_cast_macro!(SaturatingCastU128::saturating_cast_u128 -> u128, sa
 impl_saturating_cast_macro!(SaturatingCastUsize::saturating_cast_usize -> usize, saturating_cast_clamp_both; u32, u64, u128, i8, i16, i32, i64, i128, isize);
 
 // 浮動小数点→整数は`as`自体が飽和キャスト(NaNは0)を行う
-impl_saturating_cast_macro!(SaturatingCastU8::saturating_cast_u8 -> u8, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastU16::saturating_cast_u16 -> u16, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastU32::saturating_cast_u32 -> u32, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastU64::saturating_cast_u64 -> u64, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastU128::saturating_cast_u128 -> u128, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastUsize::saturating_cast_usize -> usize, saturating_cast_lossless; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastU8::saturating_cast_u8 -> u8, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastU16::saturating_cast_u16 -> u16, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastU32::saturating_cast_u32 -> u32, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastU64::saturating_cast_u64 -> u64, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastU128::saturating_cast_u128 -> u128, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastUsize::saturating_cast_usize -> usize, saturating_cast_simple_as; f32, f64);
 
 // 符号あり整数へ
-impl_saturating_cast_macro!(SaturatingCastI16::saturating_cast_i16 -> i16, saturating_cast_lossless; u8, i8);
-impl_saturating_cast_macro!(SaturatingCastI32::saturating_cast_i32 -> i32, saturating_cast_lossless; u8, u16, i8, i16);
-impl_saturating_cast_macro!(SaturatingCastI64::saturating_cast_i64 -> i64, saturating_cast_lossless; u8, u16, u32, i8, i16, i32);
-impl_saturating_cast_macro!(SaturatingCastI128::saturating_cast_i128 -> i128, saturating_cast_lossless; u8, u16, u32, u64, i8, i16, i32, i64);
-impl_saturating_cast_macro!(SaturatingCastIsize::saturating_cast_isize -> isize, saturating_cast_lossless; u8, i8, i16);
+impl_saturating_cast_macro!(SaturatingCastI16::saturating_cast_i16 -> i16, saturating_cast_simple_as; u8, i8);
+impl_saturating_cast_macro!(SaturatingCastI32::saturating_cast_i32 -> i32, saturating_cast_simple_as; u8, u16, i8, i16);
+impl_saturating_cast_macro!(SaturatingCastI64::saturating_cast_i64 -> i64, saturating_cast_simple_as; u8, u16, u32, i8, i16, i32);
+impl_saturating_cast_macro!(SaturatingCastI128::saturating_cast_i128 -> i128, saturating_cast_simple_as; u8, u16, u32, u64, i8, i16, i32, i64);
+impl_saturating_cast_macro!(SaturatingCastIsize::saturating_cast_isize -> isize, saturating_cast_simple_as; u8, i8, i16);
 
 impl_saturating_cast_macro!(SaturatingCastI8::saturating_cast_i8 -> i8, saturating_cast_clamp_both; u8, u16, u32, u64, u128, usize, i16, i32, i64, i128, isize);
 impl_saturating_cast_macro!(SaturatingCastI16::saturating_cast_i16 -> i16, saturating_cast_clamp_both; u16, u32, u64, u128, usize, i32, i64, i128, isize);
@@ -123,16 +123,16 @@ impl_saturating_cast_macro!(SaturatingCastI128::saturating_cast_i128 -> i128, sa
 impl_saturating_cast_macro!(SaturatingCastIsize::saturating_cast_isize -> isize, saturating_cast_clamp_both; u16, u32, u64, u128, usize, i32, i64, i128);
 
 // 浮動小数点→整数は`as`自体が飽和キャスト(NaNは0)を行う
-impl_saturating_cast_macro!(SaturatingCastI8::saturating_cast_i8 -> i8, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastI16::saturating_cast_i16 -> i16, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastI32::saturating_cast_i32 -> i32, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastI64::saturating_cast_i64 -> i64, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastI128::saturating_cast_i128 -> i128, saturating_cast_lossless; f32, f64);
-impl_saturating_cast_macro!(SaturatingCastIsize::saturating_cast_isize -> isize, saturating_cast_lossless; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastI8::saturating_cast_i8 -> i8, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastI16::saturating_cast_i16 -> i16, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastI32::saturating_cast_i32 -> i32, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastI64::saturating_cast_i64 -> i64, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastI128::saturating_cast_i128 -> i128, saturating_cast_simple_as; f32, f64);
+impl_saturating_cast_macro!(SaturatingCastIsize::saturating_cast_isize -> isize, saturating_cast_simple_as; f32, f64);
 
 // 浮動小数点へ
-impl_saturating_cast_macro!(SaturatingCastF32::saturating_cast_f32 -> f32, saturating_cast_lossless; u8, u16, u32, u64, usize, i8, i16, i32, i64, i128, isize);
-impl_saturating_cast_macro!(SaturatingCastF64::saturating_cast_f64 -> f64, saturating_cast_lossless; u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32);
+impl_saturating_cast_macro!(SaturatingCastF32::saturating_cast_f32 -> f32, saturating_cast_simple_as; u8, u16, u32, u64, usize, i8, i16, i32, i64, i128, isize);
+impl_saturating_cast_macro!(SaturatingCastF64::saturating_cast_f64 -> f64, saturating_cast_simple_as; u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32);
 
 // u128のみf32の範囲を超える値を持つため飽和処理を行う
 impl_saturating_cast_macro!(SaturatingCastF32::saturating_cast_f32 -> f32, saturating_cast_u128_to_f32; u128);
