@@ -6,7 +6,11 @@
 
 // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
 #[allow(unused_macros, unused_imports)]
-#[cfg(any(feature = "cast", feature = "checked-cast"))]
+#[cfg(any(
+    feature = "cast",
+    feature = "checked-cast",
+    feature = "saturating-cast"
+))]
 pub(crate) mod utility;
 
 #[cfg(feature = "cast")]
@@ -14,6 +18,9 @@ pub mod cast;
 
 #[cfg(feature = "checked-cast")]
 pub mod checked_cast;
+
+#[cfg(feature = "saturating-cast")]
+pub mod saturating_cast;
 
 #[cfg(test)]
 mod tests {
