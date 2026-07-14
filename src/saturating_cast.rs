@@ -40,16 +40,7 @@ macro_rules! saturating_cast_float_to_float {
 macro_rules! saturating_cast_u128_to_f32 {
     ($v:ident, $src:ty, $dst:ty) => {{
         let y = $v as $dst;
-        if y.is_infinite() {
-            // 整数側にis_sign_positive()は無いためキャスト結果の符号で判定する
-            if y.is_sign_positive() {
-                <$dst>::MAX
-            } else {
-                <$dst>::MIN
-            }
-        } else {
-            y
-        }
+        if y.is_infinite() { <$dst>::MAX } else { y }
     }};
 }
 
