@@ -80,6 +80,5 @@ assert_eq!(f.saturating_cast_f32(), f32::MAX); // 無限大にならず f32::MAX
 - [x] `Cast*` : `as` と同じ挙動でキャストする
 - [x] `CheckedCast*` : 損失が発生する場合は `None` を返す
 - [x] `SaturatingCast*` : 範囲外の値は型の最小値/最大値に丸める
-- [ ] `WrappingCast*` : オーバーフローした場合は値をラップする
 - [ ] `OverflowingCast*` : `(WrappingCast と同じ値, オーバーフローしたかどうか)` のタプルを返す
 - [ ] `UnwrappedCast*` : 損失が発生する場合は panic する
