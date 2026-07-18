@@ -1,4 +1,8 @@
 # as_cast
+[![crates.io](https://img.shields.io/crates/v/as_cast.svg)](https://crates.io/crates/as_cast)
+[![docs](https://docs.rs/as_cast/badge.svg)](https://docs.rs/as_cast)
+[![Rust](https://img.shields.io/badge/rust-1.85.0%2B-blue.svg?maxAge=3600)](https://github.com/komeml/as_cast)
+
 [日本語](https://github.com/komeml/as_cast/blob/main/README-jp.md)
 
 ## Overview
@@ -80,6 +84,5 @@ assert_eq!(f.saturating_cast_f32(), f32::MAX); // saturates to f32::MAX instead 
 - [x] `Cast*` : casts with the same behavior as `as`
 - [x] `CheckedCast*` : returns `None` when loss would occur
 - [x] `SaturatingCast*` : clamps out-of-range values to the type's min/max
-- [ ] `WrappingCast*` : wraps the value on overflow
 - [ ] `OverflowingCast*` : returns a tuple of `(same value as WrappingCast, whether it overflowed)`
 - [ ] `UnwrappedCast*` : panics when loss would occur
