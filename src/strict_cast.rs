@@ -29,6 +29,7 @@ macro_rules! impl_strict_cast_int_to_float {
         $(
             impl $trait for $src {
                 #[inline]
+                #[track_caller]
                 fn $method(self) -> $target {
                     if can_convert_int_to_float!(self, $target, $src) {
                         simple_as!(self, $target)
@@ -46,6 +47,7 @@ macro_rules! impl_strict_cast_float_to_int {
         $(
             impl $trait for $src {
                 #[inline]
+                #[track_caller]
                 fn $method(self) -> $target {
                     match convert_float_to_int!(self, $target, $src) {
                         Some(v) => v,
@@ -62,6 +64,7 @@ macro_rules! impl_strict_cast_int_to_int {
         $(
             impl $trait for $src {
                 #[inline]
+                #[track_caller]
                 fn $method(self) -> $target {
                     match convert_int_to_int!(self, $target) {
                         Some(v) => v,
@@ -78,6 +81,7 @@ macro_rules! impl_strict_cast_float_to_float {
         $(
             impl $trait for $src {
                 #[inline]
+                #[track_caller]
                 fn $method(self) -> $target {
                     match convert_float_to_float!(self, $target, $src) {
                         Some(v) => v,
