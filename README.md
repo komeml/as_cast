@@ -56,9 +56,9 @@ A set of traits that behave just like `Cast*`, except that out-of-range values a
 
 Values saturate as follows:
 
-- A value out of range for the target type → the type's max/min (e.g. `300i32` → `u8` yields `255`)
-- A conversion to a float type that would overflow to infinity → `f32::MAX`/`f32::MIN` (e.g. `f64::MAX` → `f32` yields `f32::MAX`)
-- `±∞` → the type's max/min for integer targets; kept as `±∞` for float targets
+- A value out of range for the target type → the type's min/max (e.g. `300i32` → `u8` yields `255`)
+- A conversion to a float type that would overflow to infinity → `f32::MIN`/`f32::MAX` (e.g. `f64::MAX` → `f32` yields `f32::MAX`)
+- `±∞` → the type's min/max for integer targets; kept as `±∞` for float targets
 - `NaN` → `0` for integer targets; kept as `NaN` for float targets
 
 Note that, just like `as`, truncation of the fractional part and loss of mantissa precision go undetected. If you want to detect loss, use `CheckedCast*` instead.
