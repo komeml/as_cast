@@ -1,5 +1,5 @@
 #![cfg_attr(
-    all(feature = "cast", feature = "checked-cast"),
+    all(feature = "cast", feature = "checked-cast", feature = "saturating-cast"),
     doc = include_str!("../README.md")
 )]
 #![no_std]
