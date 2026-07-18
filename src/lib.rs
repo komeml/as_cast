@@ -1,12 +1,16 @@
 #![cfg_attr(
-    all(feature = "cast", feature = "checked-cast"),
+    all(feature = "cast", feature = "checked-cast", feature = "saturating-cast"),
     doc = include_str!("../README.md")
 )]
 #![no_std]
 
 // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
 #[allow(unused_macros, unused_imports)]
-#[cfg(any(feature = "cast", feature = "checked-cast"))]
+#[cfg(any(
+    feature = "cast",
+    feature = "checked-cast",
+    feature = "saturating-cast"
+))]
 pub(crate) mod utility;
 
 #[cfg(feature = "cast")]
@@ -14,6 +18,9 @@ pub mod cast;
 
 #[cfg(feature = "checked-cast")]
 pub mod checked_cast;
+
+#[cfg(feature = "saturating-cast")]
+pub mod saturating_cast;
 
 #[cfg(test)]
 mod tests {
@@ -23,7 +30,11 @@ mod tests {
     #[cfg(feature = "cast")]
     mod cast_int;
 
-    #[cfg(any(feature = "cast", feature = "checked-cast"))]
+    #[cfg(any(
+        feature = "cast",
+        feature = "checked-cast",
+        feature = "saturating-cast"
+    ))]
     pub(super) mod cast_utility;
 
     #[cfg(feature = "checked-cast")]
@@ -31,4 +42,10 @@ mod tests {
 
     #[cfg(feature = "checked-cast")]
     mod checked_cast_int;
+
+    #[cfg(feature = "saturating-cast")]
+    mod saturating_cast_float;
+
+    #[cfg(feature = "saturating-cast")]
+    mod saturating_cast_int;
 }

@@ -1,6 +1,6 @@
 //! テスト共通のユーティリティ。
 //!
-//! 「ソース値セット」と比較用マクロを集約する。値そのものは両テストで
+//! 「ソース値セット」と比較用マクロを集約する。値そのものは各テストで
 //! 共有できるよう、各型について MIN / 中間 / MAX を代表値として持つ。
 
 // ========== ソース値セット ==========
@@ -8,6 +8,7 @@
 // 型ごとの入力値セット（符号なし・符号あり・float で分ける）。
 // - `cast_int` の網羅層では「変換先と同じ型を除いた」全ソースとして流し込む。
 // - `cast_float` のオラクル層では各配列を走査し `cast == as` を確認する。
+// - `saturating_cast` の網羅層・単調性プロパティでも同じ配列を流用する。
 //
 // いずれの用途でも、各配列は境界（MIN / MAX）と中間の代表値を含む。
 
@@ -90,3 +91,78 @@ pub(crate) const F64_MANTISSA_LIMIT: u64 = 1 << f64::MANTISSA_DIGITS;
 pub(crate) const F64_MANTISSA_LIMIT_MINUS_1: u64 = F64_MANTISSA_LIMIT - 1;
 #[cfg(feature = "checked-cast")]
 pub(crate) const F64_MANTISSA_LIMIT_PLUS_1: u64 = F64_MANTISSA_LIMIT + 1;
+
+// ========== saturating-cast 用の定数・マクロ ==========
+
+// `u128 → f32` で `as` が ∞ に丸める最小の値（2^128 − 2^103）。
+// f32::MAX（2^128 − 2^104）と 2^128 のちょうど中点で、最近接偶数丸めにより
+// これ未満は f32::MAX へ丸められ、これ以上は ∞ に丸まる。
+// 有効ビット幅が 25 なので f64 では正確に表現でき、f64 → f32 側の飽和境界テスト
+// にも使い回せる。
+#[cfg(feature = "saturating-cast")]
+pub(crate) const U128_TO_F32_OVERFLOW_MIDPOINT: u128 = u128::MAX - (1 << 103) + 1;
+
+// F32S / F64S から NaN を除き昇順に並べ替えた配列。
+// 単調性（順序保存）プロパティの隣接ペア検証に使う。
+#[cfg(feature = "saturating-cast")]
+pub(crate) const F32S_ASCENDING: [f32; 14] = [
+    f32::NEG_INFINITY,
+    f32::MIN,
+    -1e30,
+    -42.5,
+    -5.0,
+    -3.9,
+    -0.0,
+    0.0,
+    3.9,
+    42.5,
+    300.0,
+    1e30,
+    f32::MAX,
+    f32::INFINITY,
+];
+#[cfg(feature = "saturating-cast")]
+pub(crate) const F64S_ASCENDING: [f64; 16] = [
+    f64::NEG_INFINITY,
+    f64::MIN,
+    -1e300,
+    -1e30,
+    -42.5,
+    -5.0,
+    -3.9,
+    -0.0,
+    0.0,
+    3.9,
+    42.5,
+    300.0,
+    1e30,
+    1e300,
+    f64::MAX,
+    f64::INFINITY,
+];
+
+// 昇順のソース配列を隣接ペアで走査し、キャスト結果の順序保存
+// （`v1 <= v2` なら `cast(v1) <= cast(v2)`）を確認する。
+// `as` の回り込みでは成立しない、飽和キャスト固有の性質。
+#[cfg(feature = "saturating-cast")]
+macro_rules! check_monotonic {
+    ($m:ident; $($arr:expr),+ $(,)?) => {
+        $(
+            for pair in $arr.windows(2) {
+                let (v1, v2) = (pair[0], pair[1]);
+                assert!(v1 <= v2, "test data must be ascending: {:?}, {:?}", v1, v2);
+                assert!(
+                    v1.$m() <= v2.$m(),
+                    "order not preserved: {:?} -> {:?}, {:?} -> {:?}",
+                    v1,
+                    v1.$m(),
+                    v2,
+                    v2.$m(),
+                );
+            }
+        )+
+    };
+}
+
+#[cfg(feature = "saturating-cast")]
+pub(crate) use check_monotonic;
