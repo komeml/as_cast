@@ -1,4 +1,8 @@
 # as_cast
+[![crates.io](https://img.shields.io/crates/v/as_cast.svg)](https://crates.io/crates/as_cast)
+[![docs](https://docs.rs/as_cast/badge.svg)](https://docs.rs/as_cast)
+[![Rust](https://img.shields.io/badge/rust-1.85.0%2B-blue.svg?maxAge=3600)](https://github.com/komeml/as_cast)
+
 [日本語](https://github.com/komeml/as_cast/blob/main/README-jp.md)
 
 ## Overview
