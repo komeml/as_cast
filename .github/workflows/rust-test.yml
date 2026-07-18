@@ -32,9 +32,26 @@ jobs:
 
   cargo-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - stable
+          - 1.85.0 # MSRV
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo hack test --each-feature --tests
+
+  cargo-doc-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v2
-      - run: cargo hack test --each-feature
+      - run: cargo hack test --each-feature --doc
