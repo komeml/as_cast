@@ -12,7 +12,8 @@ rust-version = "1.85.0"
 exclude = [".github/", ".gitignore"]
 
 [features]
-default = ["cast", "checked-cast", "saturating-cast"]
+default = ["cast", "checked-cast", "saturating-cast", "strict-cast"]
 cast = []
 checked-cast = []
 saturating-cast = []
+strict-cast = []

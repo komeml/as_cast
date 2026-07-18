@@ -87,7 +87,8 @@
 #[cfg(any(
     feature = "cast",
     feature = "checked-cast",
-    feature = "saturating-cast"
+    feature = "saturating-cast",
+    feature = "strict-cast"
 ))]
 pub(crate) mod utility;
 
@@ -99,6 +100,9 @@ pub mod checked_cast;
 
 #[cfg(feature = "saturating-cast")]
 pub mod saturating_cast;
+
+#[cfg(feature = "strict-cast")]
+pub mod strict_cast;
 
 #[cfg(test)]
 mod tests {
