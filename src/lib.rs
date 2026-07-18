@@ -30,7 +30,11 @@ mod tests {
     #[cfg(feature = "cast")]
     mod cast_int;
 
-    #[cfg(any(feature = "cast", feature = "checked-cast"))]
+    #[cfg(any(
+        feature = "cast",
+        feature = "checked-cast",
+        feature = "saturating-cast"
+    ))]
     pub(super) mod cast_utility;
 
     #[cfg(feature = "checked-cast")]
@@ -38,4 +42,10 @@ mod tests {
 
     #[cfg(feature = "checked-cast")]
     mod checked_cast_int;
+
+    #[cfg(feature = "saturating-cast")]
+    mod saturating_cast_float;
+
+    #[cfg(feature = "saturating-cast")]
+    mod saturating_cast_int;
 }
