@@ -8,11 +8,12 @@
 //! It also provides lossless-aware variants like `checked_cast_i32()` and `checked_cast_f64()` that account for loss during casting.
 //!
 //! ## Features
-//! Each feature can be enabled individually via feature flags (`cast` / `checked-cast` / `saturating-cast`). All of them are enabled by default.
+//! Each feature can be enabled individually via feature flags (`cast` / `checked-cast` / `saturating-cast` / `strict-cast`). All of them are enabled by default.
 //!
 //! ### Cast*
 //!
-//! A set of traits that perform the standard `as` cast in method form. From `cast_u8()` to `cast_f64()`, conversions are supported between all numeric types (`u8`–`u128`, `usize`, `i8`–`i128`, `isize`, `f32`, `f64`).
+//! A set of traits that perform the standard `as` cast in method form.
+//! From `cast_u8()` to `cast_f64()`, conversions are supported between all numeric types (`u8`–`u128`, `usize`, `i8`–`i128`, `isize`, `f32`, `f64`).
 //!
 //! The behavior is exactly the same as `as`, so **any loss goes undetected**. If you want to detect loss, use `CheckedCast*` instead.
 //!
@@ -29,7 +30,8 @@
 //!
 //! ### CheckedCast*
 //!
-//! A set of traits that can detect loss during conversion. `checked_cast_*()` returns an `Option<T>`, yielding `Some` **only when the conversion is lossless**.
+//! A set of traits that can detect loss during conversion.
+//! `checked_cast_*()` returns an `Option<T>`, yielding `Some` **only when the conversion is lossless**.
 //!
 //! `None` is returned in the following cases:
 //!
@@ -80,6 +82,31 @@
 //! assert_eq!(f.saturating_cast_f32(), f32::MAX); // saturates to f32::MAX instead of infinity
 //! # }
 //! ```
+//!
+//! ### StrictCast*
+//!
+//! A set of traits that guarantee lossless conversion.
+//! `strict_cast_*()` returns the converted value directly (not wrapped in an `Option`), and **panics when loss would occur**.
+//! If you want to detect loss without panicking, use `CheckedCast*` instead.
+//!
+//! It panics in the following cases (the same conditions under which `CheckedCast*` returns `None`):
+//!
+//! - The value is out of range for the target type (e.g. `300i32` → `u8`)
+//! - A float-to-integer conversion would lose the fractional part (e.g. `1.5f64` → `u8`)
+//! - An integer-to-float conversion would exceed the mantissa precision (e.g. `16_777_217i32` → `f32`)
+//! - Casting `NaN`
+//!
+//! ```rust
+//! # #[cfg(feature = "strict-cast")] {
+//! use as_cast::strict_cast::StrictCastU8;
+//!
+//! let n: i32 = 200;
+//! assert_eq!(n.strict_cast_u8(), 200);
+//!
+//! // let m: i32 = 300;
+//! // m.strict_cast_u8(); // panic! (out of range for u8)
+//! # }
+//! ```
 #![no_std]
 
 // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
@@ -87,7 +114,8 @@
 #[cfg(any(
     feature = "cast",
     feature = "checked-cast",
-    feature = "saturating-cast"
+    feature = "saturating-cast",
+    feature = "strict-cast"
 ))]
 pub(crate) mod utility;
 
@@ -100,6 +128,9 @@ pub mod checked_cast;
 #[cfg(feature = "saturating-cast")]
 pub mod saturating_cast;
 
+#[cfg(feature = "strict-cast")]
+pub mod strict_cast;
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "cast")]
@@ -108,10 +139,13 @@ mod tests {
     #[cfg(feature = "cast")]
     mod cast_int;
 
+    // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
+    #[allow(dead_code)]
     #[cfg(any(
         feature = "cast",
         feature = "checked-cast",
-        feature = "saturating-cast"
+        feature = "saturating-cast",
+        feature = "strict-cast"
     ))]
     pub(super) mod cast_utility;
 
@@ -126,4 +160,10 @@ mod tests {
 
     #[cfg(feature = "saturating-cast")]
     mod saturating_cast_int;
+
+    #[cfg(feature = "strict-cast")]
+    mod strict_cast_float;
+
+    #[cfg(feature = "strict-cast")]
+    mod strict_cast_int;
 }

@@ -13,11 +13,12 @@ Rust標準の `self as T` によるキャストは、記述が増えるとコー
 また、キャスト時の損失を考慮した `checked_cast_i32()` や `checked_cast_f64()` といった機能も利用できます。
 
 ## 機能
-各機能は feature フラグ(`cast` / `checked-cast` / `saturating-cast`)で個別に有効化できます(デフォルトはすべて有効です)。
+各機能は feature フラグ(`cast` / `checked-cast` / `saturating-cast` / `strict-cast`)で個別に有効化できます(デフォルトはすべて有効です)。
 
 ### Cast*
 
-標準の `as` キャストをメソッド形式で行える trait 群です。`cast_u8()` から `cast_f64()` まで、すべての数値型(`u8`〜`u128`, `usize`, `i8`〜`i128`, `isize`, `f32`, `f64`)間の相互変換に対応しています。
+標準の `as` キャストをメソッド形式で行える trait 群です。
+`cast_u8()` から `cast_f64()` まで、すべての数値型(`u8`〜`u128`, `usize`, `i8`〜`i128`, `isize`, `f32`, `f64`)間の相互変換に対応しています。
 
 挙動は `as` と完全に同じであるため、**損失が発生しても検出されません**。損失を検出したい場合は `CheckedCast*` を使用してください。
 
@@ -32,7 +33,8 @@ assert_eq!(n.cast_f64(), 300.0);
 
 ### CheckedCast*
 
-変換時の損失を検出できる trait 群です。`checked_cast_*()` は `Option<T>` を返し、**損失なく変換できた場合のみ** `Some` を返します。
+変換時の損失を検出できる trait 群です。
+`checked_cast_*()` は `Option<T>` を返し、**損失なく変換できた場合のみ** `Some` を返します。
 
 次の場合は `None` が返ります。
 
@@ -80,8 +82,31 @@ let f: f64 = f64::MAX;
 assert_eq!(f.saturating_cast_f32(), f32::MAX); // 無限大にならず f32::MAX に飽和
 ```
 
+### StrictCast*
+
+損失なく変換できることを保証する trait 群です。
+`strict_cast_*()` は変換後の値をそのまま(`Option` に包まずに)返し、**損失が発生する場合は panic します**。
+panic を発生させずに損失を検知したい場合は `CheckedCast*` を使用してください。
+
+次の場合に panic します(`CheckedCast*` が `None` を返す条件と同じです)。
+
+- 変換先の型の範囲外の値(例: `300i32` → `u8`)
+- 浮動小数点 → 整数で小数部が失われる場合(例: `1.5f64` → `u8`)
+- 整数 → 浮動小数点で仮数部の精度を超える場合(例: `16_777_217i32` → `f32`)
+- `NaN` のキャスト
+
+```rust
+use as_cast::strict_cast::StrictCastU8;
+
+let n: i32 = 200;
+assert_eq!(n.strict_cast_u8(), 200);
+
+// let m: i32 = 300;
+// m.strict_cast_u8(); // panic! (u8 の範囲外)
+```
+
 ## 実装予定
 - [x] `Cast*` : `as` と同じ挙動でキャストする
 - [x] `CheckedCast*` : 損失が発生する場合は `None` を返す
 - [x] `SaturatingCast*` : 範囲外の値は型の最小値/最大値に丸める
-- [ ] `StrictCast*` : 損失が発生する場合は panic する
+- [x] `StrictCast*` : 損失が発生する場合は panic する
