@@ -9,7 +9,7 @@ Rust's built-in `self as T` casting has a readability problem: as casts pile up,
 It also provides lossless-aware variants like `checked_cast_i32()` and `checked_cast_f64()` that account for loss during casting.
 
 ## Features
-Each feature can be enabled individually via feature flags (`cast` / `checked-cast`). Both are enabled by default.
+Each feature can be enabled individually via feature flags (`cast` / `checked-cast` / `saturating-cast`). All of them are enabled by default.
 
 ### Cast*
 
@@ -50,10 +50,36 @@ let f: f64 = 1.5;
 assert_eq!(f.checked_cast_u8(), None); // fractional part would be lost
 ```
 
+### SaturatingCast*
+
+A set of traits that behave just like `Cast*`, except that out-of-range values are clamped (saturated) to the target type's minimum or maximum.
+
+Values saturate as follows:
+
+- A value out of range for the target type → the type's max/min (e.g. `300i32` → `u8` yields `255`)
+- A float conversion that would overflow to infinity → `f32::MAX`/`f32::MIN` (e.g. `f64::MAX` → `f32` yields `f32::MAX`)
+- `±∞` → the type's max/min for integer targets; kept as `±∞` for float targets
+- `NaN` → `0` for integer targets; kept as `NaN` for float targets
+
+Note that, just like `as`, truncation of the fractional part and loss of mantissa precision go undetected. If you want to detect loss, use `CheckedCast*` instead.
+
+```rust
+use as_cast::saturating_cast::{SaturatingCastU8, SaturatingCastF32};
+
+let n: i32 = 300;
+assert_eq!(n.saturating_cast_u8(), 255); // saturates to u8::MAX
+
+let m: i32 = -1;
+assert_eq!(m.saturating_cast_u8(), 0); // saturates to u8::MIN
+
+let f: f64 = f64::MAX;
+assert_eq!(f.saturating_cast_f32(), f32::MAX); // saturates to f32::MAX instead of infinity
+```
+
 ## Roadmap
 - [x] `Cast*` : casts with the same behavior as `as`
 - [x] `CheckedCast*` : returns `None` when loss would occur
-- [ ] `SaturatingCast*` : clamps out-of-range values to the type's min/max
+- [x] `SaturatingCast*` : clamps out-of-range values to the type's min/max
 - [ ] `WrappingCast*` : wraps the value on overflow
 - [ ] `OverflowingCast*` : returns a tuple of `(same value as WrappingCast, whether it overflowed)`
 - [ ] `UnwrappedCast*` : panics when loss would occur
