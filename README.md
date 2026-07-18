@@ -84,5 +84,4 @@ assert_eq!(f.saturating_cast_f32(), f32::MAX); // saturates to f32::MAX instead 
 - [x] `Cast*` : casts with the same behavior as `as`
 - [x] `CheckedCast*` : returns `None` when loss would occur
 - [x] `SaturatingCast*` : clamps out-of-range values to the type's min/max
-- [ ] `OverflowingCast*` : returns a tuple of `(same value as WrappingCast, whether it overflowed)`
-- [ ] `UnwrappedCast*` : panics when loss would occur
+- [ ] `StrictCast*` : panics when loss would occur
