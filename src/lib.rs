@@ -115,7 +115,8 @@ mod tests {
     #[cfg(any(
         feature = "cast",
         feature = "checked-cast",
-        feature = "saturating-cast"
+        feature = "saturating-cast",
+        feature = "strict-cast"
     ))]
     pub(super) mod cast_utility;
 
@@ -130,4 +131,10 @@ mod tests {
 
     #[cfg(feature = "saturating-cast")]
     mod saturating_cast_int;
+
+    #[cfg(feature = "strict-cast")]
+    mod strict_cast_float;
+
+    #[cfg(feature = "strict-cast")]
+    mod strict_cast_int;
 }
