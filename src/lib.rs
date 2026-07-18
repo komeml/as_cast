@@ -139,6 +139,8 @@ mod tests {
     #[cfg(feature = "cast")]
     mod cast_int;
 
+    // すべての処理をすべてのfeatureからアクセスするわけではないため未使用警告を抑制しておく
+    #[allow(dead_code)]
     #[cfg(any(
         feature = "cast",
         feature = "checked-cast",
