@@ -57,7 +57,7 @@ A set of traits that behave just like `Cast*`, except that out-of-range values a
 Values saturate as follows:
 
 - A value out of range for the target type → the type's max/min (e.g. `300i32` → `u8` yields `255`)
-- A float conversion that would overflow to infinity → `f32::MAX`/`f32::MIN` (e.g. `f64::MAX` → `f32` yields `f32::MAX`)
+- A conversion to a float type that would overflow to infinity → `f32::MAX`/`f32::MIN` (e.g. `f64::MAX` → `f32` yields `f32::MAX`)
 - `±∞` → the type's max/min for integer targets; kept as `±∞` for float targets
 - `NaN` → `0` for integer targets; kept as `NaN` for float targets
 
